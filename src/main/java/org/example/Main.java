@@ -364,7 +364,15 @@ public class Main {
         }
 
 
-        // 5.
+        // 5. --------
+
+        System.out.println("----------------------------------------------");
+
+        Predicate<Employee> currentMonth = emp -> emp.getBirthMonth().equals(LocalDate.now().getMonth().toString());
+        List<Employee> employeesWithBirthdayInCurrentMonth = listOfEmployeesWithAge.stream().filter(currentMonth).collect(Collectors.toList());
+
+        System.out.println("Employees with birthday in current month: ");
+        employeesWithBirthdayInCurrentMonth.forEach(System.out::println);
 
 
     }
