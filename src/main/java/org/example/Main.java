@@ -357,17 +357,7 @@ public class Main {
 
     }
 
-    private static List<Employee> calculateAge(List<Employee> listOfEmployees2, Function<LocalDate, Integer> calculatingAge) {
 
-        List<Employee> listOfEmployeesWithAge = new ArrayList<>();
-        for (Employee emp : listOfEmployees2) {
-            int age = calculatingAge.apply(emp.getDateOfbirth());
-            Employee employeeWithAge = new Employee(emp.getName(), emp.getDateOfbirth(), age);
-            listOfEmployeesWithAge.add(employeeWithAge);
-        }
-
-        return listOfEmployeesWithAge;
-    }
 
 
     static int operate(int a, int b, ArithmeticOperation op) {
@@ -445,6 +435,18 @@ public class Main {
             listOfEmployees.add(supplier.get());
         }
         return listOfEmployees;
+    }
+
+    private static List<Employee> calculateAge(List<Employee> listOfEmployees2, Function<LocalDate, Integer> calculatingAge) {
+
+        List<Employee> listOfEmployeesWithAge = new ArrayList<>();
+        for (Employee emp : listOfEmployees2) {
+            int age = calculatingAge.apply(emp.getDateOfbirth());
+            Employee employeeWithAge = new Employee(emp.getName(), emp.getDateOfbirth(), age);
+            listOfEmployeesWithAge.add(employeeWithAge);
+        }
+
+        return listOfEmployeesWithAge;
     }
 
 }
