@@ -3,10 +3,7 @@ package org.example;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -348,11 +345,26 @@ public class Main {
                 "Date of birth: " + employee.getDateOfbirth() + "\n" +
                 "Birth month: " + employee.getDateOfbirth().getMonth() + "\n"));
 
-        ArrayList<Employee> listTester = new ArrayList<>();
-        listTester.add(new Employee("Anders", 20));
-
 
         // 4. --------
+
+        System.out.println("----------------------------------------------");
+
+        Map<String, List<Employee>> employeesByMonth = listOfEmployeesWithAge.stream().
+                collect(Collectors.groupingBy(emp -> emp.getBirthMonth()));
+
+        for (Map.Entry<String, List<Employee>> entry : employeesByMonth.entrySet()){
+            System.out.println("--- " + entry.getKey() + "---");
+            System.out.println("Number of employees: " + entry.getValue().size() + "\n");
+
+            for (Employee emp : entry.getValue()){
+                System.out.println("Name: " + emp.getName() + "\n" + "Birth month: " + emp.getBirthMonth().toString() + "\n\n");
+            }
+
+        }
+
+
+        // 5.
 
 
     }

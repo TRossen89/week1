@@ -58,6 +58,11 @@ public class Employee {
         return dateOfbirth;
     }
 
+    public String getBirthMonth(){
+
+        return dateOfbirth.getMonth().toString();
+    }
+
     public void setDateOfbirth(LocalDate dateOfbirth) {
         this.dateOfbirth = dateOfbirth;
     }
