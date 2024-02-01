@@ -387,7 +387,31 @@ public class Main {
         // EXERCISE 5
 // ###################################################################################################################
 
+        // 1. ----------
+        System.out.println("------------------------------------------------");
+        System.out.println("METHOD REFERENCE\n");
 
+        System.out.println("Doubling values:\n");
+
+        int[] arrayOfNumberToMapOrFilter2 = {3, 4, 6, 1, 45, 9};
+
+        // Transforming numbers in array by multiplying every number by 2
+        int[] mappedNumbers2 = map(arrayOfNumberToMapOrFilter2, Main::doublesValue);
+        for (int i : mappedNumbers2) {
+            System.out.println(i);
+        }
+
+
+        // 2. -----------
+
+        System.out.println("\nFilter by dividable by 3: \n");
+
+        // Filtered array with numbers dividable by 3
+        int[] filteredArray2 = filter(arrayOfNumberToMapOrFilter2, Main::filterByDividableBy3);
+
+        for (int i : filteredArray2) {
+            System.out.println(i);
+        }
 
 
 
@@ -399,9 +423,6 @@ public class Main {
         System.out.println("---------------------------------------------");
 
         // 2. Data collection
-
-
-        // Ja, der kan blive skabt flere bøger af samme navn og med samme forfatter. Whatever.
 
         List<String> listOfAuthors = Arrays.asList("Karl", "Monika", "Caroline", "Esben", "Pedro", "Selma", "Oskar",
                 "Mette", "Charlie", "Cameron", "Alexandro", "Andrea", "Nikolaj", "Mikkel", "Julie", "Anna", "Viola");
@@ -460,6 +481,7 @@ public class Main {
         System.out.println("Books ordered by rating: \n");
 
         Comparator<Book> ratingComparator = (b1, b2) -> b1.getRating().compareTo(b2.getRating());
+
         List<Book> listOfBooksSortedByRating = listOfBooks.stream().sorted(ratingComparator.reversed()).
                 collect(Collectors.toList());
 
@@ -601,6 +623,14 @@ public class Main {
             listOfBooks.add(bookSupplier.get());
         }
         return listOfBooks;
+    }
+
+    static int doublesValue (int x){
+        return x*2;
+    }
+
+    static boolean filterByDividableBy3(int x){
+        return x % 3 == 0 ? true : false;
     }
 
 }
