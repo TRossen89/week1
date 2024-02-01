@@ -11,8 +11,7 @@ er en linje af hashtags
   
 
 ## Opgaver inkluderet og status på opgaverne
-Alle opgaverne fra week 1, på nær bonusopgaven, er inkluderet. Dvs. opgave 1-9
-Jeg er nået i mål med alle opgaverne
+Alle opgaverne fra week 1, mandag/tirsdag og onsdag og torsdag, på nær bonusopgaven fra onsdag, er inkluderet.
 
 
 
