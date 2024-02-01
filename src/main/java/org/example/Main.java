@@ -224,6 +224,7 @@ public class Main {
 
         System.out.println("-------------------------------------------");
         System.out.println("Consumer - printEmployee:\n");
+
         Consumer<Employee> employeeToPrint = emp -> System.out.println(emp);
         listOfEmployees.forEach(employeeToPrint);
 
@@ -232,6 +233,7 @@ public class Main {
 
         System.out.println("--------------------------------------------");
         System.out.println("Function - convert Employee objects to employee names: \n");
+
         Function<Employee, String> employeeStringFunction = emp -> emp.getName();
         List<String> listOfEmployeeNames = new ArrayList<>();
 
@@ -267,6 +269,7 @@ public class Main {
 
         // 1. --------
 
+        // Laver en ny liste af employees, som endnu ikke har fået nogen alder, men kun en fødselsdato
         Supplier<Employee> supplier2 = () -> {
             Random random = new Random();
             int randomIndex = random.nextInt(listOfNames2.size());
@@ -321,6 +324,8 @@ public class Main {
 
         // 2. --------
 
+        // Er med på den her opgave ikke gør brug af noget fra java.time API'et
+
         System.out.println("--------------------------------------------");
         int summedAge = 0;
         for (Employee emp : listOfEmployeesWithAge) {
@@ -369,10 +374,129 @@ public class Main {
         System.out.println("----------------------------------------------");
 
         Predicate<Employee> currentMonth = emp -> emp.getBirthMonth().equals(LocalDate.now().getMonth().toString());
-        List<Employee> employeesWithBirthdayInCurrentMonth = listOfEmployeesWithAge.stream().filter(currentMonth).collect(Collectors.toList());
+        List<Employee> employeesWithBirthdayInCurrentMonth = listOfEmployeesWithAge.stream().filter(currentMonth).
+                collect(Collectors.toList());
 
         System.out.println("Employees with birthday in current month: ");
         employeesWithBirthdayInCurrentMonth.forEach(System.out::println);
+
+
+
+
+// ###################################################################################################################
+        // EXERCISE 5
+// ###################################################################################################################
+
+
+
+
+
+// ###################################################################################################################
+        // EXERCISE 6
+// ###################################################################################################################
+
+
+        System.out.println("---------------------------------------------");
+
+        // 2. Data collection
+
+
+        // Ja, der kan blive skabt flere bøger af samme navn og med samme forfatter. Whatever.
+
+        List<String> listOfAuthors = Arrays.asList("Karl", "Monika", "Caroline", "Esben", "Pedro", "Selma", "Oskar",
+                "Mette", "Charlie", "Cameron", "Alexandro", "Andrea", "Nikolaj", "Mikkel", "Julie", "Anna", "Viola");
+
+        List<String> listOfBookTitles = Arrays.asList("Fuglenes bal", "Slaven over alle slaver", "Aber og bier",
+                "Blomsten på skyskraberen", "Fix", "Du kan godt", "Lykken er flygtig", "Livet er kort",
+                        "Hold dig munter", "Kattenes store dilemma", "Koalabjørnens krig med pingvinerne");
+
+        Supplier<Book> bookSupplier = () -> {
+            Random random = new Random();
+            int randomIndexForAuthors = random.nextInt(listOfAuthors.size());
+            String author = listOfAuthors.get(randomIndexForAuthors);
+
+            int randomIndexForBookTitles = random.nextInt(listOfBookTitles.size());
+            String title = listOfBookTitles.get(randomIndexForBookTitles);
+
+            int numberOfPages = random.nextInt(150, 1000);
+            double rating = random.nextDouble(0, 5.0000000000001);
+
+            int publicationYear = random.nextInt(1920, 2024);
+
+            return new Book(title, rating, numberOfPages, author, publicationYear);
+        };
+
+        // Sample dataset
+        List<Book> listOfBooks = createListOfBooks(10, bookSupplier);
+
+        System.out.println("List of books: \n");
+        listOfBooks.forEach(System.out::println);
+
+
+        // 3. Stream processing
+
+        // - 1.
+
+        System.out.println("---------------------------------------------");
+        Double average = listOfBooks.stream().map(book -> book.getRating()).collect(Collectors.averagingDouble(d -> d));
+
+        System.out.println("Average ratings of the books: \n");
+        System.out.println(average);
+
+
+        // - 2.
+
+        List<Book> listOfBooksPublishedAfter1980 = listOfBooks.stream().filter(book -> book.getPublicationYear() > 1980)
+                .collect(Collectors.toList());
+
+        System.out.println("---------------------------------------------");
+        System.out.println("Books published after 1980: \n");
+        listOfBooksPublishedAfter1980.forEach(System.out::println);
+
+
+        // - 3.
+
+        System.out.println("---------------------------------------------");
+        System.out.println("Books ordered by rating: \n");
+
+        Comparator<Book> ratingComparator = (b1, b2) -> b1.getRating().compareTo(b2.getRating());
+        List<Book> listOfBooksSortedByRating = listOfBooks.stream().sorted(ratingComparator.reversed()).
+                collect(Collectors.toList());
+
+        listOfBooksSortedByRating.forEach(System.out::println);
+
+
+        // - 4.
+
+        System.out.println("---------------------------------------------");
+        System.out.println("Authors average rating: \n");
+
+        Map<String, List<Book>> booksByAuthor = listOfBooks.stream().
+                collect(Collectors.groupingBy(book -> book.getAuthor()));
+
+
+        for (Map.Entry<String, List<Book>> entry : booksByAuthor.entrySet()){
+
+            Double authorsAverageRating;
+            authorsAverageRating = entry.getValue().stream().map(book -> book.getRating()).
+                    collect(Collectors.averagingDouble(d -> d));
+
+            System.out.println("Author: " + entry.getKey() + "\n" + "Average rating: " +
+                    authorsAverageRating + "\n");
+
+        }
+
+        // - 5.
+
+        System.out.println("---------------------------------------------");
+        System.out.println("Total pages of all books collected: \n");
+
+        int totalPagesOfAllBooksCollected = listOfBooks.stream().map(book -> book.getNumberOfPages()).
+                collect(Collectors.summingInt(pages -> pages));
+
+        System.out.println(totalPagesOfAllBooksCollected);
+
+
 
 
     }
@@ -467,6 +591,16 @@ public class Main {
         }
 
         return listOfEmployeesWithAge;
+    }
+
+    private static List<Book> createListOfBooks (int numberOfBooks, Supplier<Book> bookSupplier){
+
+        List<Book> listOfBooks = new ArrayList<>();
+
+        for (int i = 0; i < numberOfBooks; i++) {
+            listOfBooks.add(bookSupplier.get());
+        }
+        return listOfBooks;
     }
 
 }
