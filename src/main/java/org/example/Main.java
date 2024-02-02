@@ -572,6 +572,34 @@ public class Main {
 
 
 
+// ###################################################################################################################
+        // EXERCISE 8
+// ###################################################################################################################
+
+
+        System.out.println("\n---------------------------------------------\n");
+        System.out.println("GENERICS: \n");
+
+        // Memory storage
+        System.out.println("\nMemory storage: \n");
+
+        DataStorage<String> memoryStorage = new MemoryStorage<>();
+
+        memoryStorage.store("Test data");
+        System.out.println(memoryStorage.retrieve(null));
+
+
+        // File storage
+
+        System.out.println("\nFile storage: \n");
+
+        Employee employee1 = new Employee("Tobias", 34);
+
+        DataStorage<Employee> fileStorage = new FileStorage<>();
+
+        String filename = fileStorage.store(employee1);
+
+        System.out.println(fileStorage.retrieve(filename));
 
     }
 
