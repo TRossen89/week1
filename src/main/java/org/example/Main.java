@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -358,11 +359,11 @@ public class Main {
         Map<String, List<Employee>> employeesByMonth = listOfEmployeesWithAge.stream().
                 collect(Collectors.groupingBy(emp -> emp.getBirthMonth()));
 
-        for (Map.Entry<String, List<Employee>> entry : employeesByMonth.entrySet()){
+        for (Map.Entry<String, List<Employee>> entry : employeesByMonth.entrySet()) {
             System.out.println("--- " + entry.getKey() + "---");
             System.out.println("Number of employees: " + entry.getValue().size() + "\n");
 
-            for (Employee emp : entry.getValue()){
+            for (Employee emp : entry.getValue()) {
                 System.out.println("Name: " + emp.getName() + "\n" + "Birth month: " + emp.getBirthMonth().toString() + "\n\n");
             }
 
@@ -379,8 +380,6 @@ public class Main {
 
         System.out.println("Employees with birthday in current month: ");
         employeesWithBirthdayInCurrentMonth.forEach(System.out::println);
-
-
 
 
 // ###################################################################################################################
@@ -414,7 +413,6 @@ public class Main {
         }
 
 
-
 // ###################################################################################################################
         // EXERCISE 6
 // ###################################################################################################################
@@ -429,7 +427,7 @@ public class Main {
 
         List<String> listOfBookTitles = Arrays.asList("Fuglenes bal", "Slaven over alle slaver", "Aber og bier",
                 "Blomsten på skyskraberen", "Fix", "Du kan godt", "Lykken er flygtig", "Livet er kort",
-                        "Hold dig munter", "Kattenes store dilemma", "Koalabjørnens krig med pingvinerne");
+                "Hold dig munter", "Kattenes store dilemma", "Koalabjørnens krig med pingvinerne");
 
         Supplier<Book> bookSupplier = () -> {
             Random random = new Random();
@@ -497,11 +495,11 @@ public class Main {
                 collect(Collectors.groupingBy(book -> book.getAuthor()));
 
 
-        for (Map.Entry<String, List<Book>> entry : booksByAuthor.entrySet()){
+        for (Map.Entry<String, List<Book>> entry : booksByAuthor.entrySet()) {
 
             Double authorsAverageRating;
-            authorsAverageRating = entry.getValue().stream().map(book -> book.getRating()).
-                    collect(Collectors.averagingDouble(d -> d));
+
+            authorsAverageRating = entry.getValue().stream().collect(Collectors.averagingDouble(Book::getRating));
 
             System.out.println("Author: " + entry.getKey() + "\n" + "Average rating: " +
                     authorsAverageRating + "\n");
@@ -519,12 +517,63 @@ public class Main {
         System.out.println(totalPagesOfAllBooksCollected);
 
 
+// ###################################################################################################################
+        // EXERCISE 7
+// ###################################################################################################################
+
+        System.out.println("---------------------------------------------");
+        System.out.println("COLLECTORS\n");
+
+
+        // 2. Data set
+        List<Transaction> transactions = new ArrayList<>();
+
+        transactions.add(new Transaction(1, 1000, "DKK"));
+        transactions.add(new Transaction(2, 2000, "USD"));
+        transactions.add(new Transaction(3, 3000, "EUR"));
+        transactions.add(new Transaction(4, 4000, "GBP"));
+        transactions.add(new Transaction(5, 5000, "USD"));
+        transactions.add(new Transaction(6, 6000, "EUR"));
+        transactions.add(new Transaction(7, 7000, "DKK"));
+        transactions.add(new Transaction(8, 8000, "DKK"));
+        transactions.add(new Transaction(9, 9000, "EUR"));
+        transactions.add(new Transaction(10, 10000, "EUR"));
+
+
+        // 3. Total amount
+        int totalAmount = transactions.stream().collect(Collectors.summingInt(Transaction::getAmount));
+        System.out.println("Total amount (regardless of currency): \n" + totalAmount);
+
+
+        // 4. Group by currency and sum amount of each currency
+
+        System.out.println("\n---------------------------------------------\n");
+        System.out.println("Currency and total amount:");
+
+        transactions.stream().collect(Collectors.groupingBy(Transaction::getCurrency)).
+                forEach((cur, amount) -> System.out.println("Currency: " + cur + "\nTotal amount: " +
+                        amount.stream().collect(Collectors.summingInt(Transaction::getAmount)) + "\n"));
+
+
+        // 5. Find highest transaction amount
+
+        System.out.println("\n---------------------------------------------\n");
+        System.out.println("Highest transaction amount: \n");
+
+        System.out.println(transactions.stream().map(t -> t.getAmount()).collect(Collectors.maxBy(Integer::compare)).get());
+
+
+        // 6. Average transaction amount
+
+        System.out.println("\n---------------------------------------------\n");
+        System.out.println("Average transaction amount: \n");
+
+        System.out.println(transactions.stream().collect(Collectors.averagingInt(Transaction::getAmount)));
+
+
 
 
     }
-
-
-
 
     static int operate(int a, int b, ArithmeticOperation op) {
 
@@ -615,7 +664,7 @@ public class Main {
         return listOfEmployeesWithAge;
     }
 
-    private static List<Book> createListOfBooks (int numberOfBooks, Supplier<Book> bookSupplier){
+    private static List<Book> createListOfBooks(int numberOfBooks, Supplier<Book> bookSupplier) {
 
         List<Book> listOfBooks = new ArrayList<>();
 
@@ -625,11 +674,11 @@ public class Main {
         return listOfBooks;
     }
 
-    static int doublesValue (int x){
-        return x*2;
+    static int doublesValue(int x) {
+        return x * 2;
     }
 
-    static boolean filterByDividableBy3(int x){
+    static boolean filterByDividableBy3(int x) {
         return x % 3 == 0 ? true : false;
     }
 
