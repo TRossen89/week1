@@ -11,6 +11,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+
 public class Main {
     public static void main(String[] args) {
 
@@ -571,7 +577,6 @@ public class Main {
         System.out.println(transactions.stream().collect(Collectors.averagingInt(Transaction::getAmount)));
 
 
-
 // ###################################################################################################################
         // EXERCISE 8
 // ###################################################################################################################
@@ -601,115 +606,144 @@ public class Main {
 
         System.out.println(fileStorage.retrieve(filename));
 
+
+// ###################################################################################################################
+        // EXERCISE 9
+// ###################################################################################################################
+        // Forstår ikke den her opgave
+
+        System.out.println("\n---------------------------------------------\n");
+        System.out.println("CONCURRENCY \n");
+
+        //
+        CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> new Task().run());
+        CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> new Task().run());
+        CompletableFuture<Void> future3 = CompletableFuture.runAsync(() -> new Task().run());
+        CompletableFuture<Void> future4 = CompletableFuture.runAsync(() -> new Task().run());
+
+
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(future1, future2, future3, future4);
+        allFutures.thenRun(() -> System.out.println("All CompletableFuture tasks are completed"));
+/*
+        // Using ExecutorService
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        executorService.submit(() -> new Task().run());
+        executorService.submit(() -> new Task().run());
+
+        executorService.shutdown();
+        System.out.println("All ExecutorService tasks submitted.");
+
+ */
     }
 
-    static int operate(int a, int b, ArithmeticOperation op) {
 
-        int result = op.perform(a, b);
+static int operate(int a,int b,ArithmeticOperation op){
+
+        int result=op.perform(a,b);
         return result;
-    }
-
-
-    static int[] operate(int[] a, int[] b, ArithmeticOperation op) {
-
-        List<Integer> listOfCalculatedNumbers = new ArrayList<>();
-
-        for (int i = 0; i < a.length; i++) {
-            int result = op.perform(a[i], b[i]);
-            listOfCalculatedNumbers.add(result);
         }
 
-        int[] arrayOfCalculatedNumbers = new int[listOfCalculatedNumbers.size()];
 
-        int counter = 0;
-        for (int i : listOfCalculatedNumbers) {
-            arrayOfCalculatedNumbers[counter] = i;
-            counter++;
+static int[]operate(int[]a,int[]b,ArithmeticOperation op){
+
+        List<Integer> listOfCalculatedNumbers=new ArrayList<>();
+
+        for(int i=0;i<a.length;i++){
+        int result=op.perform(a[i],b[i]);
+        listOfCalculatedNumbers.add(result);
+        }
+
+        int[]arrayOfCalculatedNumbers=new int[listOfCalculatedNumbers.size()];
+
+        int counter=0;
+        for(int i:listOfCalculatedNumbers){
+        arrayOfCalculatedNumbers[counter]=i;
+        counter++;
         }
 
         return arrayOfCalculatedNumbers;
-    }
-
-
-    static int[] map(int[] a, MyTransformingType op) {
-
-        List<Integer> listOfNumbers = new ArrayList<>();
-
-        for (int i : a) {
-            listOfNumbers.add(op.transform(i));
         }
 
-        int[] arrayOftransformedNumbers = new int[listOfNumbers.size()];
 
-        int counter = 0;
-        for (int i : listOfNumbers) {
-            arrayOftransformedNumbers[counter] = i;
-            counter++;
+static int[]map(int[]a,MyTransformingType op){
+
+        List<Integer> listOfNumbers=new ArrayList<>();
+
+        for(int i:a){
+        listOfNumbers.add(op.transform(i));
+        }
+
+        int[]arrayOftransformedNumbers=new int[listOfNumbers.size()];
+
+        int counter=0;
+        for(int i:listOfNumbers){
+        arrayOftransformedNumbers[counter]=i;
+        counter++;
         }
 
         return arrayOftransformedNumbers;
-    }
-
-    static int[] filter(int[] a, MyValidatingType op) {
-
-        List<Integer> listOfNumbers = new ArrayList<>();
-
-        for (int i : a) {
-            if (op.validate(i)) {
-                listOfNumbers.add(i);
-            }
         }
 
-        int[] arrayOfFilteredNumbers = new int[listOfNumbers.size()];
+static int[]filter(int[]a,MyValidatingType op){
 
-        int counter = 0;
-        for (int i : listOfNumbers) {
-            arrayOfFilteredNumbers[counter] = i;
-            counter++;
+        List<Integer> listOfNumbers=new ArrayList<>();
+
+        for(int i:a){
+        if(op.validate(i)){
+        listOfNumbers.add(i);
+        }
+        }
+
+        int[]arrayOfFilteredNumbers=new int[listOfNumbers.size()];
+
+        int counter=0;
+        for(int i:listOfNumbers){
+        arrayOfFilteredNumbers[counter]=i;
+        counter++;
         }
         return arrayOfFilteredNumbers;
-    }
+        }
 
 
-    private static List<Employee> createListOfEmployees(int numberOfEmployees, Supplier<Employee> supplier) {
+private static List<Employee> createListOfEmployees(int numberOfEmployees,Supplier<Employee> supplier){
 
-        List<Employee> listOfEmployees = new ArrayList<>();
-        for (int i = 0; i < numberOfEmployees; i++) {
-            listOfEmployees.add(supplier.get());
+        List<Employee> listOfEmployees=new ArrayList<>();
+        for(int i=0;i<numberOfEmployees; i++){
+        listOfEmployees.add(supplier.get());
         }
         return listOfEmployees;
-    }
+        }
 
-    private static List<Employee> calculateAge(List<Employee> listOfEmployees2, Function<LocalDate, Integer> calculatingAge) {
+private static List<Employee> calculateAge(List<Employee> listOfEmployees2,Function<LocalDate, Integer> calculatingAge){
 
-        List<Employee> listOfEmployeesWithAge = new ArrayList<>();
-        for (Employee emp : listOfEmployees2) {
-            int age = calculatingAge.apply(emp.getDateOfbirth());
-            Employee employeeWithAge = new Employee(emp.getName(), emp.getDateOfbirth(), age);
-            listOfEmployeesWithAge.add(employeeWithAge);
+        List<Employee> listOfEmployeesWithAge=new ArrayList<>();
+        for(Employee emp:listOfEmployees2){
+        int age=calculatingAge.apply(emp.getDateOfbirth());
+        Employee employeeWithAge=new Employee(emp.getName(),emp.getDateOfbirth(),age);
+        listOfEmployeesWithAge.add(employeeWithAge);
         }
 
         return listOfEmployeesWithAge;
-    }
+        }
 
-    private static List<Book> createListOfBooks(int numberOfBooks, Supplier<Book> bookSupplier) {
+private static List<Book> createListOfBooks(int numberOfBooks,Supplier<Book> bookSupplier){
 
-        List<Book> listOfBooks = new ArrayList<>();
+        List<Book> listOfBooks=new ArrayList<>();
 
-        for (int i = 0; i < numberOfBooks; i++) {
-            listOfBooks.add(bookSupplier.get());
+        for(int i=0;i<numberOfBooks; i++){
+        listOfBooks.add(bookSupplier.get());
         }
         return listOfBooks;
-    }
+        }
 
-    static int doublesValue(int x) {
-        return x * 2;
-    }
+static int doublesValue(int x){
+        return x*2;
+        }
 
-    static boolean filterByDividableBy3(int x) {
-        return x % 3 == 0 ? true : false;
-    }
+static boolean filterByDividableBy3(int x){
+        return x%3==0?true:false;
+        }
 
-}
+        }
 
 
